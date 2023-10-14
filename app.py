@@ -15,7 +15,7 @@ def calculate():
 
     #Getting the variables 
 
-    maturity = get_date_difference(data["maturity"])
+    maturity = get_date_difference(data["maturity"])/365
     Sigma = float(data["volatility"])/100
     St=float(data["underlying"])
     K=float(data["strike"])
