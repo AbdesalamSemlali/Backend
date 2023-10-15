@@ -33,7 +33,7 @@ def TrinomialModel(St : float, K : float, T : float , Sigma : float, R : float ,
     pm = 1 - pu - pd
     
     # Initialize option value at maturity
-    option_values = [max(0, St * (u**j) * (d**(2 * i - j)) - K) for j in range(2 * N + 1)]
+    option_values = [max(0, St * (u**j) * (d**(2 * j - i)) - K) for i in range(-N, N + 1) for j in range(-N, N + 1)]
     
     # Backward iteration to calculate option price at each step
     for i in range(N - 1, -1, -1):
