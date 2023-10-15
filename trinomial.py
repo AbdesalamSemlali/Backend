@@ -1,5 +1,4 @@
 import math
-import numpy as np
 
 def TrinomialModel(St : float, K : float, T : float , Sigma : float, R : float , type : str, N : int):
     """
@@ -34,16 +33,13 @@ def TrinomialModel(St : float, K : float, T : float , Sigma : float, R : float ,
     pm = 1 - pu - pd
     
     # Initialize option value at maturity
-    option_values = np.zeros((2 * N + 1, 2 * N + 1))
-
-    # Initialize option value at maturity
-    j = np.arange(-N, N + 1)
-    option_values[N] = np.maximum(0, St * u**j * d**(2 * np.abs(j) - N) - K)
-
+    option_values = [max(0, St * (u**j) * (d**(2 * j - i)) - K) for i in range(-N, N + 1) for j in range(-N, N + 1)]
+    
     # Backward iteration to calculate option price at each step
     for i in range(N - 1, -1, -1):
-        j = np.arange(-i, i + 1)
-        option_values[i, j] = np.exp(-R * dt) * (pu * option_values[i + 1, j + 1] + pm * option_values[i + 1, j] + pd * option_values[i + 1, j - 1])
+        for j in range(-i, i + 1):
+            option_values[j] = math.exp(-R * dt) * (pu * option_values[j + 1] + pm * option_values[j] + pd * option_values[j - 1])
+    
+    return option_values[0] if type == 'Call' else max(0, K - St)
 
-    return option_values[0, 0] if type == 'call' else np.maximum(0, K - St)
 
