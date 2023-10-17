@@ -1,5 +1,6 @@
 import math
-
+import numpy as np 
+from myarrange import myArrange
 def TrinomialModel(St : float, K : float, T : float , Sigma : float, R : float , type : str, N : int):
     """
     Trinomial option pricing model for European options.
@@ -18,28 +19,23 @@ def TrinomialModel(St : float, K : float, T : float , Sigma : float, R : float ,
     """
 
     dt = T / N
-    nu = R - 0.5 * Sigma**2
-    nu_dt = nu * dt
-    sqrt_dt = math.sqrt(dt)
-    
-    # Calculate up, down, and no-move factors
-    u = math.exp(Sigma * sqrt_dt)
-    d = 1 / u
-    m = 1
-    
-    # Calculate probabilities
-    pu = ((math.exp(nu_dt) - d) / (u - d))**2
-    pd = ((u - math.exp(nu_dt)) / (u - d))**2
-    pm = 1 - pu - pd
-    
-    # Initialize option value at maturity
-    option_values = [max(0, St * (u**j) * (d**(2 * j - i)) - K) for i in range(-N, N + 1) for j in range(-N, N + 1)]
-    
-    # Backward iteration to calculate option price at each step
-    for i in range(N - 1, -1, -1):
-        for j in range(-i, i + 1):
-            option_values[j] = math.exp(-R * dt) * (pu * option_values[j + 1] + pm * option_values[j] + pd * option_values[j - 1])
-    
-    return option_values[0] if type == 'Call' else max(0, K - St)
+    u = np.exp(Sigma*np.sqrt(dt))
+    d=1/u
+    pu=(((np.exp(R*dt/2))-np.exp(-Sigma*np.sqrt(dt/2)))/
+        (np.exp(Sigma*np.sqrt(dt/2))-np.exp(-Sigma*np.sqrt(dt/2))))**2
+    pd=(((np.exp(Sigma*np.sqrt(dt/2)))-np.exp(-R*dt/2))/
+        (np.exp(Sigma*np.sqrt(dt/2))-np.exp(-Sigma*np.sqrt(dt/2))))**2
+    pm=1-pu-pd
+    disc = np.exp(-R * dt)
 
+    C = St * d ** myArrange(N) * u ** myArrange(N)[::-1] 
 
+    if type == "Call" :
+        C = np.maximum(C - K, np.zeros(2*N+1))
+    else :
+        C = np.maximum(K - C, np.zeros(2*N+1))
+
+    for i in np.arange(2*N, 0, -2):
+        C = disc * (pu * C[2:i+1] + pm * C[1:i] + pd * C[0:i-1])
+   
+    return C[0]
