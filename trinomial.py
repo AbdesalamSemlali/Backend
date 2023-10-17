@@ -19,7 +19,7 @@ def TrinomialModel(St : float, K : float, T : float , Sigma : float, R : float ,
     """
 
     dt = T / N
-    u = np.exp(Sigma*np.sqrt(dt))
+    u = np.exp(Sigma*np.sqrt(2*dt))
     d=1/u
     pu=(((np.exp(R*dt/2))-np.exp(-Sigma*np.sqrt(dt/2)))/
         (np.exp(Sigma*np.sqrt(dt/2))-np.exp(-Sigma*np.sqrt(dt/2))))**2
