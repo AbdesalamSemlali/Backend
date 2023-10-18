@@ -2,21 +2,6 @@ import math
 import numpy as np 
 from myarrange import myArrange
 def TrinomialModel(St : float, K : float, T : float , Sigma : float, R : float , type : str, N : int):
-    """
-    Trinomial option pricing model for European options.
-
-    Parameters:
-    St (float): Current stock price
-    K (float): Option strike price
-    T (float): Time to maturity (in years)
-    R (float): Risk-free interest rate
-    sigma (float): Volatility of the underlying stock
-    N (int): Number of time steps
-    type (str): 'call' for call option, 'put' for put option
-
-    Returns:
-    float: Option price
-    """
 
     dt = T / N
     u = np.exp(Sigma*np.sqrt(2*dt))
