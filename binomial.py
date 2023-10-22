@@ -16,9 +16,9 @@ def BinomialModel(St : float, K : float, T : float , Sigma : float, R : float , 
         C = np.maximum(C - K, np.zeros(N+1))
     else :
         C = np.maximum(K - C, np.zeros(N+1))
-      
+    
     # step backwards through tree
     for i in np.arange(N, 0, -1):
         C = disc * (q * C[1:i+1] + (1 - q) * C[0:i])
-   
+        
     return C[0]
