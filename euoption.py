@@ -92,7 +92,7 @@ class eOp(Op):
         return call * 0.01 if self.ot == "Call" else put * 0.01
 
 
-    def P_CRR(self):
+    def P_CRR(self,f):
         if self.N > 10:
             self.N = 10
         dt = self.T / self.N
@@ -119,7 +119,7 @@ class eOp(Op):
         for i in range(self.N, -self.N - 1, -1):
             for j in range(i, -i - 1, -2):
                 k = np.arange(0, i + 1, 1 / 2)
-                G.add_node((i, j), label=f"{round(T[self.N - i][i - int(k[i - j])], 3)}")
+                G.add_node((i, j), label=f"{round(T[self.N - i][i - int(k[i - j])], 1)}")
                 if i < self.N:
                     G.add_edge((i, j), (i + 1, j + 1), label=round(q, 3))
                     G.add_edge((i, j), (i + 1, j - 1), label=round(1 - q, 3))
@@ -132,9 +132,9 @@ class eOp(Op):
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
         plt.title('Cox-Ross-Rubinstein tree for option pricing -Eur Case-')
         plt.axis('off')
-        return T
+        plt.savefig(f, format="png")
 
-    def P_TM(self):
+    def P_TM(self,f):
         if self.N > 10:
             self.N = 10
         dt = self.T / self.N
@@ -164,7 +164,7 @@ class eOp(Op):
         for i in range(self.N, -self.N - 1, -1):
             for j in range(i, -i - 1, -1):
                 k = np.arange(0, 2 * i + 1, 1)
-                G.add_node((i, j), label=f"{round(T[self.N-i][int(k[i + j])], 3)}")
+                G.add_node((i, j), label=f"{round(T[self.N-i][int(k[i + j])], 1)}")
                 if i < self.N:
                     G.add_edge((i, j), (i + 1, j + 1), label=round(pu, 3))
                     G.add_edge((i, j), (i + 1, j - 1), label=round(p, 3))
@@ -177,6 +177,7 @@ class eOp(Op):
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
         plt.title('Boyle tree for option pricing -Eur Case-')
         plt.axis('off')
+        plt.savefig(f, format="png")
 
 
 

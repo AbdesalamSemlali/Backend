@@ -35,15 +35,15 @@ def calculate():
     
     
     # Save the figure to a BytesIO object.
-    #image_stream = io.BytesIO()
+    image_stream = io.BytesIO()
     #plt.savefig(image_stream, format='png')
-
+    
      # Move the file pointer to the beginning of the stream.
-    #image_stream.seek(0)
+    
 
-    #encoded_image = base64.b64encode(image_stream.read()).decode('utf-8')
+    
     if data["optionType"]=="European" :
-        impliedVolatility= getReal(ticker,data["maturity"],data["option"],K)
+        impliedVolatility= np.round(np.array(getReal(ticker,data["maturity"],data["option"],K)).flatten(),3)
         EuroOption = eOp(K=K,ticker=ticker,N=N,ot=data["option"],exp=data["maturity"],d=dividend,r=R,s=sigma)
         EuroOption.D()
         EuroOption.volatility()
@@ -55,9 +55,16 @@ def calculate():
             price = EuroOption.BS()
         elif data["model"]== "Binomial" :
             price = EuroOption.CRR()
+            EuroOption.P_CRR(image_stream)
+            image_stream.seek(0)
+            encoded_image = base64.b64encode(image_stream.read()).decode('utf-8')
         else :
             price = EuroOption.TM()
+            EuroOption.P_TM(image_stream)
+            image_stream.seek(0)
+            encoded_image = base64.b64encode(image_stream.read()).decode('utf-8')
     elif data["optionType"] == "American" :
+        impliedVolatility= ["None for American","None for American"]
         UsOption = aOp(K=K,ticker=ticker,N=N,ot=data["option"],exp=data["maturity"],d=dividend, r=R,s=sigma)
         UsOption.D()
         UsOption.volatility()
@@ -67,11 +74,17 @@ def calculate():
         volatility = round(UsOption.s*100,3)
         if data["model"] == "Binomial" : 
             price = UsOption.CRR()
+            UsOption.P_CRR(image_stream)
+            image_stream.seek(0)
+            encoded_image = base64.b64encode(image_stream.read()).decode('utf-8')
         elif data["model"] =="Trinomial" :
             price = UsOption.TM()
+            UsOption.P_TM(image_stream)
+            image_stream.seek(0)
+            encoded_image = base64.b64encode(image_stream.read()).decode('utf-8')
         
     
-    return jsonify({'price': round(price,3), "st" :round(St,3), "volatility" :volatility,"impliedVolatility": round(impliedVolatility[1]*100,3),"realPrice": round(impliedVolatility[0],3), "dividendYield" : round(d,3)  })
+    return jsonify({'price': round(price,3),"image": encoded_image, "st" :round(St,3), "volatility" :volatility,"impliedVolatility": impliedVolatility[1],"realPrice": impliedVolatility[0], "dividendYield" : round(d,3)  })
     
 
 @app.route('/getDates', methods=['POST'])

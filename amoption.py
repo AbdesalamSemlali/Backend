@@ -58,7 +58,7 @@ class aOp(Op):
                 C = pd.Series(np.maximum((self.K - S).tolist(), C)).tolist()
         return C[0]
 
-    def P_CRR(self):
+    def P_CRR(self,f):
         if self.N>10:
             self.N = 10
         dt = self.T / self.N
@@ -115,8 +115,9 @@ class aOp(Op):
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
         plt.title('Cox-Ross-Rubinstein tree for option pricing -Amr Case-')
         plt.axis('off')
+        plt.savefig(f, format="png")
 
-    def P_TM(self):
+    def P_TM(self,f):
         if self.N > 10:
             self.N = 10
         dt = self.T / self.N
@@ -173,3 +174,4 @@ class aOp(Op):
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
         plt.title('Cox-Ross-Rubinstein tree for option pricing -Amr Case-')
         plt.axis('off')
+        plt.savefig(f, format="png")
