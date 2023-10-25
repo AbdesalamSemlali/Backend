@@ -2,8 +2,8 @@ from Classes import *
 import matplotlib.pyplot as plt
 import networkx as nx
 class aOp(Op):
-    def __init__(self,K : float,ticker : str,N : int,ot :str,exp : str,r=0.05,d=0.0,s=0.0):
-        super().__init__(K,ticker,N,ot,exp,r,d,s)
+    def __init__(self,K : float,ticker : str,N : int,ot :str,exp : str,r : float,d : float,s : float):
+        super().__init__(K,ticker,N,ot,exp,d,r,s)
 
     def CRR(self):
         dt = self.T / self.N
@@ -43,13 +43,13 @@ class aOp(Op):
         pm = 1 - pu - p
         disc = np.exp(-self.r * dt)
 
-        C = float(self.df.iloc[-1]) * d ** pd.Series(list(np.arange(self.N, -1 / 2, -1 / 2))) * u ** pd.Series(list(np.arange(0, self.N + 1 / 2, 1 / 2)))
+        C = float(self.df.iloc[-1,0]) * d ** pd.Series(list(np.arange(self.N, -1 / 2, -1 / 2))) * u ** pd.Series(list(np.arange(0, self.N + 1 / 2, 1 / 2)))
         if self.ot == 'Call':
             C = pd.Series(np.maximum((C - self.K).tolist(), np.zeros(2*self.N + 1))).tolist()
         else:
             C = pd.Series(np.maximum((self.K - C).tolist(), np.zeros(2*self.N + 1))).tolist()
         for i in range(self.N-1, -1, -1):
-            S = float(self.df.iloc[-1]) * d ** pd.Series(list(np.arange(i, -1/2, -1/2))) * u ** pd.Series(list(np.arange(0, i + 1/2, 1/2)))
+            S = float(self.df.iloc[-1,0]) * d ** pd.Series(list(np.arange(i, -1/2, -1/2))) * u ** pd.Series(list(np.arange(0, i + 1/2, 1/2)))
             C[:2*i + 1] = (disc * (pu * pd.Series(C[0:2*i+1]) + (p * pd.Series(C[2:2*i + 3])) + (pm * pd.Series(C[1:2*i+2])))).tolist()
             C = C[:2*i + 1]
             if self.ot == 'Call':
@@ -67,7 +67,7 @@ class aOp(Op):
         q = (np.exp((self.r - self.d) * dt) - d) / (u - d)
         disc = np.exp(-self.r * dt)
 
-        S = float(self.df.iloc[-1]) * d ** pd.Series(list(range(self.N, -1, -1))) * u ** pd.Series(
+        S = float(self.df.iloc[-1,0]) * d ** pd.Series(list(range(self.N, -1, -1))) * u ** pd.Series(
             list(range(0, self.N + 1, 1)))
         # S = St * d ** (np.arange(N, -1, -1)) * u ** (np.arange(0, N + 1, 1))
         T = []
@@ -82,7 +82,7 @@ class aOp(Op):
             D.append(C)
 
         for i in range(self.N - 1, -1, -1):
-            S = float(self.df.iloc[-1]) * d ** pd.Series(list(range(i, -1, -1))) * u ** pd.Series(list(range(0, i + 1, 1)))
+            S = float(self.df.iloc[-1,0]) * d ** pd.Series(list(range(i, -1, -1))) * u ** pd.Series(list(range(0, i + 1, 1)))
             # S = St * d ** (np.arange(i, -1, -1)) * u ** (np.arange(0, i + 1, 1))
             # C[:i + 1] = disc * (q * C[1:i + 2] + (1 - q) * C[0:i + 1])
             C[:i + 1] = (disc * (q * pd.Series(C[1:i + 2]) + (1 - q) * pd.Series(C[0:i + 1]))).tolist()
@@ -129,7 +129,7 @@ class aOp(Op):
         pm = 1 - pu - p
         disc = np.exp(-self.r * dt)
 
-        C = float(self.df.iloc[-1]) * d ** pd.Series(list(np.arange(self.N, -1 / 2, -1 / 2))) * u ** pd.Series(list(np.arange(0, self.N + 1 / 2, 1 / 2)))
+        C = float(self.df.iloc[-1,0]) * d ** pd.Series(list(np.arange(self.N, -1 / 2, -1 / 2))) * u ** pd.Series(list(np.arange(0, self.N + 1 / 2, 1 / 2)))
         if self.ot == 'Call':
             C = pd.Series(np.maximum((C - self.K).tolist(), np.zeros(2 * self.N + 1))).tolist()
         else:

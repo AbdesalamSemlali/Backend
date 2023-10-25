@@ -3,8 +3,8 @@ from Classes import *
 import matplotlib.pyplot as plt
 import networkx as nx
 class eOp(Op):
-    def __init__(self,K : float,ticker : str,N : int,ot :str,exp : str,r=0.05,d=0.0,s=0.0):
-        super().__init__(K,ticker,N,ot,exp,r,d,s)
+    def __init__(self,K : float,ticker : str,N : int,ot :str,exp : str,r : float,d : float,s : float):
+        super().__init__(K,ticker,N,ot,exp,d,r,s)
 
     def CRR(self):
         dt = self.T / self.N
@@ -38,7 +38,7 @@ class eOp(Op):
         disc = np.exp(-self.r * dt)
 
 
-        C=float(self.df.iloc[-1]) * d ** pd.Series(list(np.arange(self.N, -1/2, -1/2))) * u **  pd.Series(list(np.arange(0, self.N + 1/2, 1/2)))
+        C=float(self.df.iloc[-1,0]) * d ** pd.Series(list(np.arange(self.N, -1/2, -1/2))) * u **  pd.Series(list(np.arange(0, self.N + 1/2, 1/2)))
         #C = float(self.df.iloc[-1]) * d ** np.arange(self.N, -1/2, -1/2) * u ** np.arange(0, self.N + 1/2, 1/2)
         if self.ot == "Call":
             #C = np.maximum(C - self.K, np.zeros(2 * self.N + 1))
@@ -54,42 +54,42 @@ class eOp(Op):
         return C[0]
 
     def BS(self):
-        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(float(self.df.iloc[-1])/ self.K) + (self.r - self.d + 0.5 * (self.s) ** 2) * self.T)
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(float(self.df.iloc[-1,0])/ self.K) + (self.r - self.d + 0.5 * (self.s) ** 2) * self.T)
         d2 = d1 - self.s * np.sqrt(self.T)
 
 
         if self.ot == "Call":
-            return float(self.df.iloc[-1]) * norm.cdf(d1) - self.K * np.exp(-self.r * self.T) * norm.cdf(d2)
+            return float(self.df.iloc[-1,0]) * norm.cdf(d1) - self.K * np.exp(-self.r * self.T) * norm.cdf(d2)
         elif self.ot == "Put":
-            return -float(self.df.iloc[-1]) * norm.cdf(-d1) + self.K * np.exp(-self.r * self.T) * norm.cdf(-d2)
+            return -float(self.df.iloc[-1,0]) * norm.cdf(-d1) + self.K * np.exp(-self.r * self.T) * norm.cdf(-d2)
 
     def delta(self):
-        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
-        return norm.cdf(d1) if type == "Call" else -norm.cdf(-d1)
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        return norm.cdf(d1) if self.ot == "Call" else -norm.cdf(-d1)
 
     def gamma(self):
-        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
-        return norm.pdf(d1) / (self.df.iloc[-1] * self.s * np.sqrt(self.T))
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        return norm.pdf(d1) / (self.df.iloc[-1,0] * self.s * np.sqrt(self.T))
 
     def theta(self):
-        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
         d2 = d1 - self.s * np.sqrt(self.T)
-        call = -self.df.iloc[-1] * norm.pdf(d1, 0, 1) * self.s / (2 * np.sqrt(self.T)) - self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(d2, 0, 1)
-        put = (-self.df.iloc[-1] * self.s * norm.pdf(d1)) / (2 * np.sqrt(self.T)) + self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(-d2)
-        return call / 365 if type == "Call" else put / 365
+        call = -self.df.iloc[-1,0] * norm.pdf(d1, 0, 1) * self.s / (2 * np.sqrt(self.T)) - self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(d2, 0, 1)
+        put = (-self.df.iloc[-1,0] * self.s * norm.pdf(d1)) / (2 * np.sqrt(self.T)) + self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(-d2)
+        return call / 365 if self.ot == "Call" else put / 365
 
     def vega(self):
         d1 = (1 / (self.s * np.sqrt(self.T))) * (
-                    np.log(self.df.iloc[-1] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+                    np.log(self.df.iloc[-1,0] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
         d2 = d1 - self.s * np.sqrt(self.T)
-        return self.df.iloc[-1] * norm.pdf(d1) * np.sqrt(self.T) * 0.01
+        return self.df.iloc[-1,0] * norm.pdf(d1) * np.sqrt(self.T) * 0.01
 
     def rho(self):
-        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
         d2 = d1 - self.s * np.sqrt(self.T)
         call = self.K * self.T * np.exp(-self.r * self.T) * norm.cdf(d2, 0, 1)
         put = -self.K * self.T * np.exp(-self.r * self.T) * norm.cdf(-d2, 0, 1)
-        return call * 0.01 if type == "Call" else put * 0.01
+        return call * 0.01 if self.ot == "Call" else put * 0.01
 
 
     def P_CRR(self):
@@ -101,7 +101,7 @@ class eOp(Op):
         q = (np.exp((self.r - self.d) * dt) - d) / (u - d)
         disc = np.exp(-self.r * dt)
 
-        C = float(self.df.iloc[-1]) * d ** pd.Series(list(range(self.N, -1, -1))) * u ** pd.Series(list(range(0, self.N + 1, 1)))
+        C = float(self.df.iloc[-1,0]) * d ** pd.Series(list(range(self.N, -1, -1))) * u ** pd.Series(list(range(0, self.N + 1, 1)))
         T = []
         # C = float(self.df.iloc[-1]) * d ** np.arange(self.N, -1, -1) * u ** np.arange(0, self.N + 1, 1)
         if self.ot == "Call":
@@ -146,7 +146,7 @@ class eOp(Op):
         p = ((b - a) / (b - 1 / b)) ** 2
         pm = 1 - pu - p
         disc = np.exp(-self.r * dt)
-        C = float(self.df.iloc[-1]) * d ** pd.Series(list(np.arange(self.N, -1 / 2, -1 / 2))) * u ** pd.Series(list(np.arange(0, self.N + 1 / 2, 1 / 2)))
+        C = float(self.df.iloc[-1,0]) * d ** pd.Series(list(np.arange(self.N, -1 / 2, -1 / 2))) * u ** pd.Series(list(np.arange(0, self.N + 1 / 2, 1 / 2)))
         T = []
         # C = float(self.df.iloc[-1]) * d ** np.arange(self.N, -1/2, -1/2) * u ** np.arange(0, self.N + 1/2, 1/2)
         if self.ot == "Call":

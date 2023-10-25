@@ -10,7 +10,7 @@ def expiries(ticker):
     return df
 """
 class Op:
-    def __init__(self,K : float,ticker : str,N : int,ot :str,exp : str,d : float,r=0.05,s=0.0):
+    def __init__(self,K : float,ticker : str,N : int,ot :str,exp : str,d : float,r : float,s : float):
         self.K = K
         self.ticker = ticker
         self.r = r
@@ -31,14 +31,15 @@ class Op:
     """
     def dividend(self):
         ticker = yf.Ticker(self.ticker)
-        c = float(sum(ticker.history(period="1y")['Dividends'])/self.df.iloc[-1])
+        c = float(sum(ticker.history(period="1y")['Dividends'])/self.df.iloc[-1,0])
         if self.d == 0 :
             self.d = c
 
     def volatility(self):
         df1 = self.df.pct_change()
         df1 = df1.dropna()
-        self.s = np.std(np.array(df1))*np.sqrt(256)
+        if self.s ==0 :
+            self.s = np.std(np.array(df1))*np.sqrt(256)
     
     def expiries(ticker):
         df = yo.get_expiration_dates(stock_ticker=ticker)

@@ -11,6 +11,7 @@ from americainBinomial import *
 from Classes import *
 from euoption import *
 from amoption import *
+from getImplied import *
 
 
 app = Flask(__name__)
@@ -26,8 +27,11 @@ def calculate():
     R=float(data["interest"])/100
     ticker = data["ticker"]
     dividend = float(data["dividend"])/100
+    sigma = float(data["volatility"])/100
     if len(data["period"])>0 :
         N= int(data["period"])
+    else :
+        N= 0
     
     
     # Save the figure to a BytesIO object.
@@ -39,9 +43,12 @@ def calculate():
 
     #encoded_image = base64.b64encode(image_stream.read()).decode('utf-8')
     if data["optionType"]=="European" :
-        EuroOption = eOp(K=K,ticker=ticker,N=N,ot=data["option"],exp=data["maturity"],d=dividend,r=R)
+        impliedVolatility= getReal(ticker,data["maturity"],data["option"],K)
+        EuroOption = eOp(K=K,ticker=ticker,N=N,ot=data["option"],exp=data["maturity"],d=dividend,r=R,s=sigma)
         EuroOption.D()
-        EuroOption.volatility() 
+        EuroOption.volatility()
+        EuroOption.dividend()
+        d = EuroOption.d
         St = float(EuroOption.df.iloc[-1,0])
         volatility = round(EuroOption.s*100,3)
         if data["model"]== "Black & Scholes" :
@@ -51,9 +58,11 @@ def calculate():
         else :
             price = EuroOption.TM()
     elif data["optionType"] == "American" :
-        UsOption = aOp(K=K,ticker=ticker,N=N,ot=data["option"],exp=data["maturity"],d=dividend, r=R)
+        UsOption = aOp(K=K,ticker=ticker,N=N,ot=data["option"],exp=data["maturity"],d=dividend, r=R,s=sigma)
         UsOption.D()
         UsOption.volatility()
+        UsOption.dividend()
+        d = UsOption.d
         St = float(UsOption.df.iloc[-1,0])
         volatility = round(UsOption.s*100,3)
         if data["model"] == "Binomial" : 
@@ -62,7 +71,7 @@ def calculate():
             price = UsOption.TM()
         
     
-    return jsonify({'price': round(price,3), "st" :round(St,3), "volatility" :volatility })
+    return jsonify({'price': round(price,3), "st" :round(St,3), "volatility" :volatility,"impliedVolatility": round(impliedVolatility[1]*100,3),"realPrice": round(impliedVolatility[0],3), "dividendYield" : round(d,3)  })
     
 
 @app.route('/getDates', methods=['POST'])
