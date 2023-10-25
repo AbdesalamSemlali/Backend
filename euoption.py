@@ -63,8 +63,33 @@ class eOp(Op):
         elif self.ot == "Put":
             return -float(self.df.iloc[-1]) * norm.cdf(-d1) + self.K * np.exp(-self.r * self.T) * norm.cdf(-d2)
 
+    def delta(self):
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        return norm.cdf(d1) if type == "Call" else -norm.cdf(-d1)
 
+    def gamma(self):
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        return norm.pdf(d1) / (self.df.iloc[-1] * self.s * np.sqrt(self.T))
 
+    def theta(self):
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        d2 = d1 - self.s * np.sqrt(self.T)
+        call = -self.df.iloc[-1] * norm.pdf(d1, 0, 1) * self.s / (2 * np.sqrt(self.T)) - self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(d2, 0, 1)
+        put = (-self.df.iloc[-1] * self.s * norm.pdf(d1)) / (2 * np.sqrt(self.T)) + self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(-d2)
+        return call / 365 if type == "Call" else put / 365
+
+    def vega(self):
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (
+                    np.log(self.df.iloc[-1] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        d2 = d1 - self.s * np.sqrt(self.T)
+        return self.df.iloc[-1] * norm.pdf(d1) * np.sqrt(self.T) * 0.01
+
+    def rho(self):
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        d2 = d1 - self.s * np.sqrt(self.T)
+        call = self.K * self.T * np.exp(-self.r * self.T) * norm.cdf(d2, 0, 1)
+        put = -self.K * self.T * np.exp(-self.r * self.T) * norm.cdf(-d2, 0, 1)
+        return call * 0.01 if type == "Call" else put * 0.01
 
 
     def P_CRR(self):
