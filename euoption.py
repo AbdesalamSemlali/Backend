@@ -3,8 +3,8 @@ from Classes import *
 import matplotlib.pyplot as plt
 import networkx as nx
 class eOp(Op):
-    def __init__(self,K : float,ticker : str,N : int,ot :str,r=0.05,d=0.0,s=0.0):
-        super().__init__(K,ticker,N,ot,r,d,s)
+    def __init__(self,K : float,ticker : str,N : int,ot :str,exp : str,r=0.05,d=0.0,s=0.0):
+        super().__init__(K,ticker,N,ot,exp,r,d,s)
 
     def CRR(self):
         dt = self.T / self.N
@@ -14,7 +14,7 @@ class eOp(Op):
         disc = np.exp(-self.r * dt)
 
 
-        C=float(self.df.iloc[-1]) * d ** pd.Series(list(range(self.N, -1, -1))) * u **  pd.Series(list(range(0, self.N + 1, 1)))
+        C=float(self.df.iloc[-1,0]) * d ** pd.Series(list(range(self.N, -1, -1))) * u **  pd.Series(list(range(0, self.N + 1, 1)))
         #C = float(self.df.iloc[-1]) * d ** np.arange(self.N, -1, -1) * u ** np.arange(0, self.N + 1, 1)
         if self.ot == "Call":
             C = pd.Series(np.maximum((C - self.K).tolist(), np.zeros(self.N + 1))).tolist()
