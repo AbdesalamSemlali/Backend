@@ -30,15 +30,15 @@ class Op:
         self.T = (datetime.strptime(exp, '%Y-%m-%d').date() - date.today()).days / 365
     """
     def dividend(self):
-        ticker = yf.Ticker(self.ticker)
-        c = float(sum(ticker.history(period="1y")['Dividends'])/self.df.iloc[-1,0])
         if self.d == 0 :
+            ticker = yf.Ticker(self.ticker)
+            c = float(sum(ticker.history(period="1y")['Dividends'])/self.df.iloc[-1,0])
             self.d = c
 
     def volatility(self):
-        df1 = self.df.pct_change()
-        df1 = df1.dropna()
         if self.s ==0 :
+            df1 = self.df.pct_change()
+            df1 = df1.dropna()
             self.s = np.std(np.array(df1))*np.sqrt(256)
     
     def expiries(ticker):
