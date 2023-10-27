@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 class P_eOp(Op):
-    def __init__(self,K : float,ticker : str,N : int,ot :str,exp : str,r=0.05,d=0.0,s=0.0):
+    def __init__(self,K : float,ticker : str,N : int,ot :str,exp : str,r : float,d : float,s : float):
         super().__init__(K,ticker,N,ot,exp,r,d,s)
 
 
@@ -62,66 +62,77 @@ class P_eOp(Op):
             Y = np.zeros((6, len(X)))
 
 
-
         match matching_indices:
             case 0:
-                for i in range(x_min, x_max):
-                    Y[0,i-x_min] = self.BlackScholes(i, self.K, self.T, self.s, self.r, self.ot, self.d)
-                    Y[1, i - x_min] = self.delta(i, self.K, self.T, self.s, self.r, self.ot, self.d)
-                    Y[2, i - x_min] = self.gamma(i, self.K, self.T, self.s, self.r, self.ot, self.d)
-                    Y[3, i - x_min] = self.rho(i, self.K, self.T, self.s, self.r, self.ot, self.d)
-                    Y[4, i - x_min] = self.theta(i, self.K, self.T, self.s, self.r, self.ot, self.d)
-                    Y[5, i - x_min] = self.vega(i, self.K, self.T, self.s, self.r, self.ot, self.d)
+                p=0
+                for i in X :
+                    Y[0,p] = self.BlackScholes(i, self.K, self.T, self.s, self.r, self.ot, self.d)
+                    Y[1, p] = self.delta(i, self.K, self.T, self.s, self.r, self.ot, self.d)
+                    Y[2, p] = self.gamma(i, self.K, self.T, self.s, self.r, self.ot, self.d)
+                    Y[3, p] = self.rho(i, self.K, self.T, self.s, self.r, self.ot, self.d)
+                    Y[4, p] = self.theta(i, self.K, self.T, self.s, self.r, self.ot, self.d)
+                    Y[5, p] = self.vega(i, self.K, self.T, self.s, self.r, self.ot, self.d)
+                    p=p+1
                 return X,Y
 
             case 1:
-              for i in range(x_min, x_max):
-                  Y[0, i - x_min] = self.BlackScholes(self.df.iloc[-1,0],i, self.T, self.s, self.r, self.ot, self.d)
-                  Y[1, i - x_min] = self.delta(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot, self.d)
-                  Y[2, i - x_min] = self.gamma(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot, self.d)
-                  Y[3, i - x_min] = self.rho(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot, self.d)
-                  Y[4, i - x_min] = self.theta(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot, self.d)
-                  Y[5, i - x_min] = self.vega(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot,self.d)
+              p=0
+              for i in X:
+                  Y[0, p] = self.BlackScholes(self.df.iloc[-1,0],i, self.T, self.s, self.r, self.ot, self.d)
+                  Y[1, p] = self.delta(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot, self.d)
+                  Y[2, p] = self.gamma(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot, self.d)
+                  Y[3, p] = self.rho(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot, self.d)
+                  Y[4, p] = self.theta(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot, self.d)
+                  Y[5, p] = self.vega(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot,self.d)
+                  p=p+1
               return X, Y
 
             case 2:
-                for i in range(x_min, x_max):
-                    Y[0, i - x_min] = self.BlackScholes(self.df.iloc[-1, 0], self.K,i,self.s, self.r, self.ot, self.d)
-                    Y[1, i - x_min] = self.delta(self.df.iloc[-1, 0], self.K,i,self.s, self.r, self.ot, self.d)
-                    Y[2, i - x_min] = self.gamma(self.df.iloc[-1, 0], self.K,i, self.s, self.r, self.ot, self.d)
-                    Y[3, i - x_min] = self.rho(self.df.iloc[-1, 0], self.K,i, self.s, self.r, self.ot, self.d)
-                    Y[4, i - x_min] = self.theta(self.df.iloc[-1, 0], self.K,i, self.s, self.r, self.ot, self.d)
-                    Y[5, i - x_min] = self.vega(self.df.iloc[-1, 0], self.K,i, self.s, self.r, self.ot,self.d)
+                p=0
+                for i in X:
+                    Y[0, p] = self.BlackScholes(self.df.iloc[-1, 0], self.K,i,self.s, self.r, self.ot, self.d)
+                    Y[1, p] = self.delta(self.df.iloc[-1, 0], self.K,i,self.s, self.r, self.ot, self.d)
+                    Y[2, p] = self.gamma(self.df.iloc[-1, 0], self.K,i, self.s, self.r, self.ot, self.d)
+                    Y[3, p] = self.rho(self.df.iloc[-1, 0], self.K,i, self.s, self.r, self.ot, self.d)
+                    Y[4, p] = self.theta(self.df.iloc[-1, 0], self.K,i, self.s, self.r, self.ot, self.d)
+                    Y[5, p] = self.vega(self.df.iloc[-1, 0], self.K,i, self.s, self.r, self.ot,self.d)
+                    p=p+1
                 return X, Y
 
             case 3:
-                for i in range(x_min, x_max):
-                    Y[0, i - x_min] = self.BlackScholes(self.df.iloc[-1, 0], self.K,self.T ,i, self.r, self.ot, self.d)
-                    Y[1, i - x_min] = self.delta(self.df.iloc[-1, 0], self.K,self.T, i, self.r, self.ot, self.d)
-                    Y[2, i - x_min] = self.gamma(self.df.iloc[-1, 0], self.K,self.T, i, self.r, self.ot, self.d)
-                    Y[3, i - x_min] = self.rho(self.df.iloc[-1, 0], self.K, self.T,i, self.r, self.ot, self.d)
-                    Y[4, i - x_min] = self.theta(self.df.iloc[-1, 0], self.K, self.T,i, self.r, self.ot, self.d)
-                    Y[5, i - x_min] = self.vega(self.df.iloc[-1, 0], self.K, self.T,i, self.r, self.ot,self.d)
+                p=0
+                for i in X:
+                    Y[0, p] = self.BlackScholes(self.df.iloc[-1, 0], self.K,self.T ,i, self.r, self.ot, self.d)
+                    Y[1, p] = self.delta(self.df.iloc[-1, 0], self.K,self.T, i, self.r, self.ot, self.d)
+                    Y[2, p] = self.gamma(self.df.iloc[-1, 0], self.K,self.T, i, self.r, self.ot, self.d)
+                    Y[3, p] = self.rho(self.df.iloc[-1, 0], self.K, self.T,i, self.r, self.ot, self.d)
+                    Y[4, p] = self.theta(self.df.iloc[-1, 0], self.K, self.T,i, self.r, self.ot, self.d)
+                    Y[5, p] = self.vega(self.df.iloc[-1, 0], self.K, self.T,i, self.r, self.ot,self.d)
+                    p=p+1
                 return X, Y
 
             case 4:
-                for i in range(x_min, x_max):
-                    Y[0, i - x_min] = self.BlackScholes(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
-                    Y[1, i - x_min] = self.delta(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
-                    Y[2, i - x_min] = self.gamma(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
-                    Y[3, i - x_min] = self.rho(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
-                    Y[4, i - x_min] = self.theta(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
-                    Y[5, i - x_min] = self.vega(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
+                p=0
+                for i in X:
+                    Y[0, p] = self.BlackScholes(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
+                    Y[1, p] = self.delta(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
+                    Y[2, p] = self.gamma(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
+                    Y[3, p] = self.rho(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
+                    Y[4, p] = self.theta(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
+                    Y[5, p] = self.vega(self.df.iloc[-1, 0], self.K, self.T, self.s, i, self.ot, self.d)
+                    p=p+1
                 return X, Y
 
             case 5:
-                for i in range(x_min, x_max):
-                    Y[0, i - x_min] = self.BlackScholes(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
-                    Y[1, i - x_min] = self.delta(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
-                    Y[2, i - x_min] = self.gamma(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
-                    Y[3, i - x_min] = self.rho(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
-                    Y[4, i - x_min] = self.theta(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
-                    Y[5, i - x_min] = self.vega(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
+                p=0
+                for i in X:
+                    Y[0, p] = self.BlackScholes(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
+                    Y[1, p] = self.delta(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
+                    Y[2, p] = self.gamma(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
+                    Y[3, p] = self.rho(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
+                    Y[4, p] = self.theta(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
+                    Y[5, p] = self.vega(self.df.iloc[-1, 0], self.K, self.T, self.s, self.r, self.ot, i)
+                    p=p+1
                 return X, Y
             case _:
                 print("error")
@@ -233,17 +244,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(j, self.K, self.T,i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.BlackScholes(i, self.K, self.T,j, self.r, self.ot,self.d)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(j, self.K, self.T,i, self.r, self.ot, self.d)
+                                Z[Q[p],Q[m]] = self.delta(i, self.K, self.T,j, self.r, self.ot, self.d)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(j, self.K, self.T,i, self.r, self.ot, self.d)
+                                Z[Q[p],Q[m]] = self.gamma(i, self.K, self.T,j, self.r, self.ot, self.d)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(j, self.K, self.T,i, self.r, self.ot, self.d)
+                                Z[Q[p],Q[m]] = self.rho(i, self.K, self.T,j, self.r, self.ot, self.d)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(j, self.K, self.T,i, self.r, self.ot, self.d)
+                                Z[Q[p],Q[m]] = self.theta(i, self.K, self.T,j, self.r, self.ot, self.d)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(j, self.K, self.T,i, self.r, self.ot, self.d)
+                                Z[Q[p],Q[m]] = self.vega(i, self.K, self.T,j, self.r, self.ot, self.d)
 
                         m = m+1
                     p = p+1
@@ -266,17 +277,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(j, self.K, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.BlackScholes(i, self.K, self.T, self.s, j, self.ot,self.d)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(j, self.K, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.delta(i, self.K, self.T, self.s, j, self.ot,self.d)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(j, self.K, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.gamma(i, self.K, self.T, self.s, j, self.ot,self.d)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(j, self.K, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.rho(i, self.K, self.T, self.s, j, self.ot,self.d)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(j, self.K, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.theta(i, self.K, self.T, self.s, j, self.ot,self.d)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(j, self.K, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.vega(i, self.K, self.T, self.s, j, self.ot,self.d)
 
                         m = m+1
                     p = p+1
@@ -299,17 +310,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(j, self.K, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.BlackScholes(i, self.K, self.T, self.s, self.r, self.ot,j)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(j, self.K, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.delta(i, self.K, self.T, self.s, self.r, self.ot,j)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(j, self.K, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.gamma(i, self.K, self.T, self.s, self.r, self.ot,j)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(j, self.K, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.rho(i, self.K, self.T, self.s, self.r, self.ot,j)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(j, self.K, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.theta(i, self.K, self.T, self.s, self.r, self.ot,j)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(j, self.K, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.vega(i, self.K, self.T, self.s, self.r, self.ot,j)
 
                         m = m+1
                     p = p+1
@@ -332,17 +343,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], j, i, self.s, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], i, j, self.s, self.r, self.ot,self.d)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], j, i, self.s, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], i, j, self.s, self.r, self.ot,self.d)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], j, i, self.s, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], i, j, self.s, self.r, self.ot,self.d)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], j, i, self.s, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], i, j, self.s, self.r, self.ot,self.d)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], j, i, self.s, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], i, j, self.s, self.r, self.ot,self.d)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], j, i, self.s, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], i, j, self.s, self.r, self.ot,self.d)
                         m = m+1
                     p = p+1
                 return np.meshgrid(X,Y) , Z.transpose()
@@ -363,17 +374,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], j, self.T, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], i, self.T, j, self.r, self.ot,self.d)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], j, self.T, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], i, self.T, j, self.r, self.ot,self.d)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], j, self.T, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], i, self.T, j, self.r, self.ot,self.d)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], j, self.T, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], i, self.T, j, self.r, self.ot,self.d)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], j, self.T, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], i, self.T, j, self.r, self.ot,self.d)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], j, self.T, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], i, self.T, j, self.r, self.ot,self.d)
                         m = m+1
                     p = p+1
                 return np.meshgrid(X,Y) , Z.transpose()
@@ -394,17 +405,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], j, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], i, self.T, self.s, j, self.ot,self.d)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], j, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], i, self.T, self.s, j, self.ot,self.d)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], j, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], i, self.T, self.s, j, self.ot,self.d)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], j, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], i, self.T, self.s, j, self.ot,self.d)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], j, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], i, self.T, self.s, j, self.ot,self.d)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], j, self.T, self.s, i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], i, self.T, self.s, j, self.ot,self.d)
                         m = m+1
                     p = p+1
 
@@ -426,17 +437,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], j, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot,j)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], j, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot,j)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], j, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot,j)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], j, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot,j)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], j, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot,j)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], j, self.T, self.s, self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], i, self.T, self.s, self.r, self.ot,j)
                         m = m+1
                     p = p+1
                 return np.meshgrid(X,Y) , Z.transpose()
@@ -457,17 +468,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, j, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, i, j, self.r, self.ot,self.d)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, j, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, i, j, self.r, self.ot,self.d)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, j, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, i, j, self.r, self.ot,self.d)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, j, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, i, j, self.r, self.ot,self.d)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, j, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, i, j, self.r, self.ot,self.d)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, j, i, self.r, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, i, j, self.r, self.ot,self.d)
                         m = m+1
                     p = p+1
                 return np.meshgrid(X,Y) , Z.transpose()
@@ -488,17 +499,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, j,self.s,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, i,self.s,j, self.ot,self.d)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, j,self.s,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, i,self.s,j, self.ot,self.d)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, j,self.s,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, i,self.s,j, self.ot,self.d)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, j,self.s,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, i,self.s,j, self.ot,self.d)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, j,self.s,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, i,self.s,j, self.ot,self.d)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, j,self.s,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, i,self.s,j, self.ot,self.d)
                         m = m+1
                     p = p+1
                 return np.meshgrid(X,Y) , Z.transpose()
@@ -519,17 +530,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, j,self.s,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, i,self.s,self.r, self.ot,j)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, j,self.s,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, i,self.s,self.r, self.ot,j)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, j,self.s,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, i,self.s,self.r, self.ot,j)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, j,self.s,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, i,self.s,self.r, self.ot,j)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, j,self.s,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, i,self.s,self.r, self.ot,j)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, j,self.s,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, i,self.s,self.r, self.ot,j)
                         m = m+1
                     p = p+1
                 return np.meshgrid(X,Y) , Z.transpose()
@@ -550,17 +561,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, self.T,j,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, self.T,i,j, self.ot,self.d)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, self.T,j,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, self.T,i,j, self.ot,self.d)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, self.T,j,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, self.T,i,j, self.ot,self.d)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, self.T,j,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, self.T,i,j, self.ot,self.d)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, self.T,j,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, self.T,i,j, self.ot,self.d)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, self.T,j,i, self.ot,self.d)
+                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, self.T,i,j, self.ot,self.d)
                         m = m+1
                     p = p+1
                 return np.meshgrid(X,Y) , Z.transpose()
@@ -581,17 +592,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, self.T,j,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, self.T,i,self.r, self.ot,j)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, self.T,j,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, self.T,i,self.r, self.ot,j)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, self.T,j,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, self.T,i,self.r, self.ot,j)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, self.T,j,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, self.T,i,self.r, self.ot,j)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, self.T,j,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, self.T,i,self.r, self.ot,j)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, self.T,j,self.r, self.ot,i)
+                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, self.T,i,self.r, self.ot,j)
                         m = m+1
                     p = p+1
                 return np.meshgrid(X,Y) , Z.transpose()
@@ -613,17 +624,17 @@ class P_eOp(Op):
                     for j in Y:
                         match t:
                             case 'BS':
-                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, self.T,self.s,j, self.ot,i)
+                                Z[Q[p],Q[m]] = self.BlackScholes(self.df.iloc[-1,0], self.K, self.T,self.s,i, self.ot,j)
                             case 'delta':
-                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, self.T,self.s,j, self.ot,i)
+                                Z[Q[p],Q[m]] = self.delta(self.df.iloc[-1,0], self.K, self.T,self.s,i, self.ot,j)
                             case 'gamma':
-                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, self.T,self.s,j, self.ot,i)
+                                Z[Q[p],Q[m]] = self.gamma(self.df.iloc[-1,0], self.K, self.T,self.s,i, self.ot,j)
                             case 'rho':
-                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, self.T,self.s,j, self.ot,i)
+                                Z[Q[p],Q[m]] = self.rho(self.df.iloc[-1,0], self.K, self.T,self.s,i, self.ot,j)
                             case 'theta':
-                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, self.T,self.s,j, self.ot,i)
+                                Z[Q[p],Q[m]] = self.theta(self.df.iloc[-1,0], self.K, self.T,self.s,i, self.ot,j)
                             case 'vega':
-                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, self.T,self.s,j, self.ot,i)
+                                Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, self.T,self.s,i, self.ot,j)
                         m = m+1
                     p = p+1
                 return np.meshgrid(X,Y) , Z.transpose()
