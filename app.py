@@ -120,8 +120,8 @@ def getPlot() :
                 y=Y[5].tolist()
         return jsonify({"x" :x.tolist() , "y" : y})
     else : 
-        x,y,z =plotOption.P3_OP(int(data["xmin"]),int(data["xmax"]),int(data["xmin"]),int(data["xmax"]),data["x"],data["y"],data["z"])
-        return jsonify({"x" :x.tolist() , "y" : y.tolist(), "z" : z[0].tolist()})
+        x,z =plotOption.P3_OP(int(data["xmin"]),int(data["xmax"]),int(data["ymin"]),int(data["ymax"]),data["x"],data["y"],data["z"])
+        return jsonify({"x" :x[0].tolist() , "y" : x[1].tolist(), "z" : z.tolist()})
 
 if __name__ == '__main__':
     app.run(debug=True)

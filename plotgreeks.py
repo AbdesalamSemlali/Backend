@@ -181,7 +181,7 @@ class P_eOp(Op):
 
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
 
             case '02' | '20':
                 if matching_indices == '20':
@@ -214,7 +214,7 @@ class P_eOp(Op):
 
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
 
             case '03' | '30':
                 if matching_indices == '30':
@@ -247,7 +247,7 @@ class P_eOp(Op):
 
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
 
             case '04' | '40':
                 if matching_indices == '40':
@@ -280,7 +280,7 @@ class P_eOp(Op):
 
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
 
             case '05' | '50':
                 if matching_indices == '50':
@@ -313,7 +313,7 @@ class P_eOp(Op):
 
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
 
             case '21' | '12':
                 if matching_indices == '21':
@@ -345,7 +345,7 @@ class P_eOp(Op):
                                 Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], j, i, self.s, self.r, self.ot,self.d)
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
             case '31' | '13':
                 if matching_indices == '31':
                     u = x_min
@@ -376,7 +376,7 @@ class P_eOp(Op):
                                 Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], j, self.T, i, self.r, self.ot,self.d)
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
             case '41' | '14':
                 if matching_indices == '41':
                     u = x_min
@@ -408,7 +408,7 @@ class P_eOp(Op):
                         m = m+1
                     p = p+1
 
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
             case '51' | '15':
                 if matching_indices == '51':
                     u = x_min
@@ -439,7 +439,7 @@ class P_eOp(Op):
                                 Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], j, self.T, self.s, self.r, self.ot,i)
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
             case '23' | '32':
                 if matching_indices == '32':
                     u = x_min
@@ -470,7 +470,7 @@ class P_eOp(Op):
                                 Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, j, i, self.r, self.ot,self.d)
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
             case '42' | '24':
                 if matching_indices == '42':
                     u = x_min
@@ -501,7 +501,7 @@ class P_eOp(Op):
                                 Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, j,self.s,i, self.ot,self.d)
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
             case '25' | '52':
                 if matching_indices == '52':
                     u = x_min
@@ -532,7 +532,7 @@ class P_eOp(Op):
                                 Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, j,self.s,self.r, self.ot,i)
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
             case '43' | '34':
                 if matching_indices == '43':
                     u = x_min
@@ -563,7 +563,7 @@ class P_eOp(Op):
                                 Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, self.T,j,i, self.ot,self.d)
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
             case '35' | '53':
                 if matching_indices == '53':
                     u = x_min
@@ -594,7 +594,7 @@ class P_eOp(Op):
                                 Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, self.T,j,self.r, self.ot,i)
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
 
             case '54' | '45':
                 if matching_indices == '54':
@@ -626,7 +626,7 @@ class P_eOp(Op):
                                 Z[Q[p],Q[m]] = self.vega(self.df.iloc[-1,0], self.K, self.T,self.s,j, self.ot,i)
                         m = m+1
                     p = p+1
-                return X, Y, Z
+                return np.meshgrid(X,Y) , Z.transpose()
             case _:
                 print("error")
 
