@@ -64,32 +64,31 @@ class eOp(Op):
             return -float(self.df.iloc[-1,0]) * norm.cdf(-d1) + self.K * np.exp(-self.r * self.T) * norm.cdf(-d2)
 
     def delta(self):
-        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
-        return norm.cdf(d1) if self.ot == "Call" else -norm.cdf(-d1)
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + ((self.r-self.d) + 0.5 * (self.s) ** 2) * self.T)
+        return np.exp(-self.d*self.T)*norm.cdf(d1) if self.ot == "Call" else - np.exp(-self.d*self.T)*norm.cdf(-d1)
 
     def gamma(self):
-        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
-        return norm.pdf(d1) / (self.df.iloc[-1,0] * self.s * np.sqrt(self.T))
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + ((self.r-self.d)+ 0.5 * (self.s) ** 2) * self.T)
+        return  np.exp(-self.d*self.T)* norm.pdf(d1) / (self.df.iloc[-1,0] * self.s * np.sqrt(self.T))
 
     def theta(self):
-        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + ((self.r-self.d) + 0.5 * (self.s) ** 2) * self.T)
         d2 = d1 - self.s * np.sqrt(self.T)
-        call = -self.df.iloc[-1,0] * norm.pdf(d1, 0, 1) * self.s / (2 * np.sqrt(self.T)) - self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(d2, 0, 1)
-        put = (-self.df.iloc[-1,0] * self.s * norm.pdf(d1)) / (2 * np.sqrt(self.T)) + self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(-d2)
-        return call / 365 if self.ot == "Call" else put / 365
+        call = -np.exp(-self.d*self.T)*self.df.iloc[-1,0] * norm.pdf(d1, 0, 1) * self.s / (2 * np.sqrt(self.T)) - self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(d2, 0, 1) + self.d*self.df.iloc[-1,0]*np.exp(-self.d*self.T)*norm.cdf(d1,0,1)
+        put = (-np.exp(-self.d*self.T)*self.df.iloc[-1,0] * self.s * norm.pdf(d1)) / (2 * np.sqrt(self.T)) + self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(-d2) - self.d*self.df.iloc[-1,0]*np.exp(-self.d*self.T)*norm.cdf(-d1,0,1)
+        return call  if self.ot == "Call" else put 
 
     def vega(self):
-        d1 = (1 / (self.s * np.sqrt(self.T))) * (
-                    np.log(self.df.iloc[-1,0] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + ((self.r-self.d) + 0.5 * (self.s) ** 2) * self.T)
         d2 = d1 - self.s * np.sqrt(self.T)
-        return self.df.iloc[-1,0] * norm.pdf(d1) * np.sqrt(self.T) * 0.01
+        return np.exp(-self.d*self.T)*self.df.iloc[-1,0] * norm.pdf(d1) * np.sqrt(self.T)
 
     def rho(self):
-        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + (self.r + 0.5 * (self.s) ** 2) * self.T)
+        d1 = (1 / (self.s * np.sqrt(self.T))) * (np.log(self.df.iloc[-1,0] / self.K) + ((self.r-self.d) + 0.5 * (self.s) ** 2) * self.T)
         d2 = d1 - self.s * np.sqrt(self.T)
         call = self.K * self.T * np.exp(-self.r * self.T) * norm.cdf(d2, 0, 1)
         put = -self.K * self.T * np.exp(-self.r * self.T) * norm.cdf(-d2, 0, 1)
-        return call * 0.01 if self.ot == "Call" else put * 0.01
+        return call  if self.ot == "Call" else put 
 
 
     def P_CRR(self,f):

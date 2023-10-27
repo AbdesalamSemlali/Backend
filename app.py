@@ -7,7 +7,8 @@ from Classes import *
 from euoption import *
 from amoption import *
 from getImplied import *
-
+from plotgreeks import *
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -92,12 +93,35 @@ def getDates() :
     data= request.get_json()
 
     expiries = Op.expiries(data["ticker"])
-    print(expiries)
 
     return jsonify({"expiries" : expiries})
 
-
-
+@app.route('/getPlot', methods=['POST'])
+def getPlot() : 
+    data= request.get_json()
+    x=[]
+    y=[]
+    plotOption= P_eOp(K=float(data["strike"]),ticker=data["ticker"],N=0,ot=data["ot"],exp=data["exp"],r=float(data["r"]),d=float(data["d"]),s=float(data["s"]))
+    plotOption.D()
+    if data["z"]=="None" :
+        x,Y=plotOption.P2_OP(int(data["xmin"]),int(data["xmax"]),data["x"])
+        match data["y"] :
+            case "BS" :
+                y=Y[0].tolist()
+            case "delta" :
+                y=Y[1].tolist()
+            case "gamma" :
+                y=Y[2].tolist()
+            case "rho" :
+                y=Y[3].tolist()
+            case "theta" :
+                y=Y[4].tolist()
+            case "vega" :
+                y=Y[5].tolist()
+        return jsonify({"x" :x.tolist() , "y" : y})
+    else : 
+        x,y,z =plotOption.P3_OP(int(data["xmin"]),int(data["xmax"]),int(data["xmin"]),int(data["xmax"]),data["x"],data["y"],data["z"])
+        return jsonify({"x" :x.tolist() , "y" : y.tolist(), "z" : z[0].tolist()})
 
 if __name__ == '__main__':
     app.run(debug=True)
