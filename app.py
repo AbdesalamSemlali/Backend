@@ -104,7 +104,7 @@ def getPlot() :
     plotOption= P_eOp(K=float(data["strike"]),ticker=data["ticker"],N=0,ot=data["ot"],exp=data["exp"],r=float(data["r"]),d=float(data["d"]),s=float(data["s"]))
     plotOption.D()
     if data["z"]=="None" :
-        x,Y=plotOption.P2_OP(int(data["xmin"]),int(data["xmax"]),data["x"])
+        x,Y=plotOption.P2_OP(float(data["xmin"]),float(data["xmax"]),data["x"])
         match data["y"] :
             case "BS" :
                 y=Y[0].tolist()
@@ -120,7 +120,7 @@ def getPlot() :
                 y=Y[5].tolist()
         return jsonify({"x" :x.tolist() , "y" : y})
     else : 
-        x,z =plotOption.P3_OP(int(data["xmin"]),int(data["xmax"]),int(data["ymin"]),int(data["ymax"]),data["x"],data["y"],data["z"])
+        x,z =plotOption.P3_OP(float(data["xmin"]),float(data["xmax"]),float(data["ymin"]),float(data["ymax"]),data["x"],data["y"],data["z"])
         return jsonify({"x" :x[0].tolist() , "y" : x[1].tolist(), "z" : z.tolist()})
 
 if __name__ == '__main__':
