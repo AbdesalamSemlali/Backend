@@ -1,4 +1,4 @@
-from Classes import *
+from Option.Classes import *
 import matplotlib.pyplot as plt
 import networkx as nx
 class aOp(Op):

@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.stats import norm
-from Classes import *
+from Option.Classes import *
 import matplotlib.pyplot as plt
 
 

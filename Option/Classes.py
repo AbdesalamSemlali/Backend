@@ -4,11 +4,6 @@ from datetime import *
 import numpy as np
 import yoptions as yo
 
-"""
-def expiries(ticker):
-    df = yo.get_expiration_dates(stock_ticker=self.ticker)
-    return df
-"""
 class Op:
     def __init__(self,K : float,ticker : str,N : int,ot :str,exp : str,d : float,r : float,s : float):
         self.K = K
@@ -25,10 +20,7 @@ class Op:
         df = ticker.history(period="1y")['Close']
         df = pd.DataFrame(np.array(df.iloc[:]), columns=[self.ticker], index=np.array(df.index.strftime('%Y-%m-%d')))
         self.df = df
-    """
-    def expiry(self,exp):
-        self.T = (datetime.strptime(exp, '%Y-%m-%d').date() - date.today()).days / 365
-    """
+   
     def dividend(self):
         if self.d == 0 :
             ticker = yf.Ticker(self.ticker)
