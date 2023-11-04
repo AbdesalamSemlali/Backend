@@ -3,11 +3,11 @@ from flask import Flask, request, jsonify
 import matplotlib.pyplot as plt
 from flask_cors import CORS
 import base64
-from Classes import *
-from euoption import *
-from amoption import *
-from getImplied import *
-from plotgreeks import *
+from Option.Classes import *
+from Option.euoption import *
+from Option.amoption import *
+from Option.getImplied import *
+from Option.plotgreeks import *
 import json
 
 app = Flask(__name__)
@@ -122,6 +122,14 @@ def getPlot() :
     else : 
         x,z =plotOption.P3_OP(float(data["xmin"]),float(data["xmax"]),float(data["ymin"]),float(data["ymax"]),data["x"],data["y"],data["z"])
         return jsonify({"x" :x[0].tolist() , "y" : x[1].tolist(), "z" : z.tolist()})
+
+
+@app.route("/getMatrix",methods=["POST"])
+def getMatrix() :
+    Tickers = request.get_json()
+    return jsonify({"response" : "all good !"})
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

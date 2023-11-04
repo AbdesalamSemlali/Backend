@@ -143,16 +143,16 @@ class P_eOp(Op):
         m2 = int(np.where(X == y)[0])
         matching_indices = str(m1)+str(m2)
         if (x_max-x_min)<(y_max-y_min):
-            if x_max < 2 or y_max <2:
-                Y = np.arange(y_min, y_max,0.1)
-                X = np.arange(x_min, x_max,(x_max-x_min)/len(Y))
-            else:
-                Y = np.arange(y_min, y_max)
-                X = np.arange(x_min, x_max, (x_max - x_min) / len(Y))
-        else:
-            if x_max < 2 or y_max <2:
+            if x_max <= 10:
                 X = np.arange(x_min, x_max,0.1)
+                Y = np.arange(y_min, y_max,(y_max-y_min)/len(X))
+            else:
+                X = np.arange(x_min, x_max)
                 Y = np.arange(y_min, y_max, (y_max - y_min) / len(X))
+        else:
+            if y_max <= 10:
+                Y = np.arange(y_min, y_max,0.1)
+                X = np.arange(x_min, x_max, (x_max - x_min) / len(Y))
             else:
                 X = np.arange(x_min, x_max)
                 Y = np.arange(y_min, y_max, (y_max - y_min) / len(X))
