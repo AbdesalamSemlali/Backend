@@ -8,6 +8,16 @@ from Option.euoption import *
 from Option.amoption import *
 from Option.getImplied import *
 from Option.plotgreeks import *
+from Yield.cubicSpline import *
+from Yield.nelsonSiegel import *
+from Yield.nelsonSvenson import * 
+from Yield.vasicek import *
+from Yield.cir import *
+from Yield.Scrapper import *
+from Yield.Interpolation import * 
+from Yield.ModelisationGARCH import *
+from Yield.BDscrapper import *
+from datetime import datetime
 import json
 
 app = Flask(__name__)
@@ -129,6 +139,81 @@ def getMatrix() :
     Tickers = request.get_json()
     return jsonify({"response" : "all good !"})
 
+
+@app.route("/yieldPlot",methods=["POST"])
+def yieldPlot() :
+    
+    data= request.get_json()
+    startDate = data["startDate"]
+    endDate = data["endDate"]
+    country = data["country"]
+    x_est,y_est,x,y =  [[],[],[],[]]
+
+
+    if data["type"] == "Interpolation" : 
+        var = Interpolation(country,startDate)
+
+        match data["model"] :
+            case "Cubic Spline" :
+                var.SC(20)
+                x_est = var.sc["maturity"].values
+                y_est= var.sc[var.CC+"_TBA"].values
+                x = var.data["maturity"].values
+                y = var.data[var.CC+"_TBA"].values    
+
+            case  "Nelson-Siegel" :
+                var.NS()
+                x_est = var.ns["maturity"].values
+                y_est= var.ns[var.CC+"_TBA"].values
+                x = var.data["maturity"].values
+                y = var.data[var.CC+"_TBA"].values
+
+            case  "Nelson-Siegel-Svenson" :
+                var.NSS()
+                x_est = var.nss["maturity"].values
+                y_est= var.nss[var.CC+"_TBA"].values
+                x = var.data["maturity"].values
+                y = var.data[var.CC+"_TBA"].values
+            
+            case "Bootsrapping" : 
+                var.bootsrapping()
+                x_est = var.BS["maturity"].values
+                y_est= var.BS[var.CC+"_TBA"].values
+                x = var.data["maturity"].values
+                y = var.data[var.CC+"_TBA"].values
+
+            case "Cubic-Interpolation" : 
+                var.CI()
+                x_est = var.ci["maturity"].values
+                y_est= var.ci[var.CC+"_TBA"].values
+                x = var.data["maturity"].values
+                y = var.data[var.CC+"_TBA"].values
+            case "Linear-Interpolation" : 
+                var.LI()
+                x_est = var.li["maturity"].values
+                y_est= var.li[var.CC+"_TBA"].values
+                x = var.data["maturity"].values
+                y = var.data[var.CC+"_TBA"].values
+    else :
+
+        var = ModelisationGARCH(country,startDate,endDate)
+        a = ModelisationGARCH(country,endDate,datetime.today().strftime("%d-%m-%Y"))
+        w = pd.concat([var.data,a.data]).drop_duplicates()
+        y = w[var.CC+"_TBA"].values
+        x = w.index.astype(str, copy = False)
+        var.VGARCH()
+        df = var.VASICEKGPMCS(int(data["simulations"]))
+        x_est = df.index.astype(str, copy = False)
+        
+        if data["pathType"] == "Mean" : 
+            y_est = np.mean(df.to_numpy().T,axis=0)
+        elif data["pathType"] == "Median" :
+            y_est = pd.DataFrame(df.to_numpy().T).sort_values(df.columns[-1]).to_numpy()[int(int(data["simulations"])/2)]
+        else : 
+            y_est = df.to_numpy().T
+            
+        
+    return jsonify({"x_est" : x_est.tolist(),"y_est" : y_est.tolist(), "x" : x.tolist() , "y" : y.tolist()})
 
 
 if __name__ == '__main__':
