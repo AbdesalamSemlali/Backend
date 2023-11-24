@@ -65,7 +65,7 @@ class scrapper:
                 self.data = df
         elif self.CC != None:
             with sync_playwright() as p:
-                browser = p.chromium.launch()
+                browser = p.chromium.launch( executable_path="opt/render/.cache/ms-playwright/chromium-1091")
                 page = browser.new_page()
                 # Navigate to the webpage
                 page.goto('https://fr.tradingview.com/markets/bonds/prices-all')
